@@ -15,7 +15,9 @@ YOLOv8-based object detection API for detecting Personal Protective Equipment (P
 
 
 ### Model Details
+
 Architecture: YOLOv8 (Ultralytics)
+
 Task: Object Detection
 
 Classes:[helmet, vest]
@@ -25,14 +27,20 @@ The model is pre-trained and fine-tuned for PPE detection
 
 ### Project Structure
 ppe-compliance-api/
+
 │
+
 ├── api.py               # FastAPI application
+
 ├── ppe_model.pt         # Trained YOLOv8 model
+
 ├── requirements.txt     # Project dependencies
+
 └── README.md
 
 Clone the repository:
 `git clone https://github.com/prometheus-py/ppe-compliance-api.git`
+
 `cd ppe-compliance-api`
 
 Create virtual environment:
