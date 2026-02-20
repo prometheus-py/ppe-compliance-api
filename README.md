@@ -1,9 +1,8 @@
 ### PPE Compliance Detection API
 
 YOLOv8-based object detection API for detecting Personal Protective Equipment (PPE) compliance in images. This project exposes a FastAPI endpoint that performs inference using a trained YOLOv8 model to detect:
-* 1. Helmet
-* 2. Safety Vest
-Built as a deployable ML system for real-world industrial safety monitoring.
+ 1. Helmet
+ 2. Safety Vest
 
 
 ### Tech Stack
@@ -44,10 +43,13 @@ Install dependencies:
 `pip install -r requirements.txt`
 
 ### Running the API
+
 Start the server:
 `uvicorn api:app --reload`
+
 API will run at:
 `http://127.0.0.1:8000`
+
 Swagger documentation available at:
 `http://127.0.0.1:8000/docs`
 
