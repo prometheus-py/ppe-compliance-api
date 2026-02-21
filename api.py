@@ -9,25 +9,38 @@ import cv2
 
 app = FastAPI()
 
-# Load trained model
+# Load model once at startup (CPU only)
 model = YOLO("ppe_model.pt")
+model.to("cpu")
+
+
+@app.get("/")
+def health_check():
+    return {"status": "PPE API is running"}
 
 
 @app.post("/detect")
 async def detect(file: UploadFile = File(...)):
 
-    # Create unique filename for uploaded image
-    temp_filename = f"temp_{uuid.uuid4().hex}.jpg"
+    # Generate unique filenames
+    temp_filename = f"/tmp/temp_{uuid.uuid4().hex}.jpg"
+    annotated_filename = f"/tmp/annotated_{uuid.uuid4().hex}.jpg"
 
+    # Save uploaded image
     with open(temp_filename, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     start_time = time.time()
 
-    # Run inference
-    results = model(temp_filename, conf=0.4)
+    # Run inference (explicit CPU + reduced size for memory safety)
+    results = model.predict(
+        source=temp_filename,
+        conf=0.4,
+        imgsz=640,
+        device="cpu"
+    )
 
-    inference_time = time.time() - start_time
+    inference_time = round(time.time() - start_time, 3)
 
     # Load image for annotation
     image = cv2.imread(temp_filename)
@@ -40,14 +53,12 @@ async def detect(file: UploadFile = File(...)):
 
         x1, y1, x2, y2 = map(int, xyxy)
 
-        # Draw bounding box
         cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-        # Label text
         cv2.putText(
             image,
             f"{class_name} {conf:.2f}",
-            (x1, y1 - 10),
+            (x1, max(y1 - 10, 10)),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.6,
             (0, 255, 0),
@@ -55,15 +66,14 @@ async def detect(file: UploadFile = File(...)):
         )
 
     # Save annotated image
-    annotated_filename = f"annotated_{uuid.uuid4().hex}.jpg"
     cv2.imwrite(annotated_filename, image)
 
-    # Remove original uploaded image
+    # Cleanup original file
     os.remove(temp_filename)
 
-    # Return annotated image directly
     return FileResponse(
         annotated_filename,
         media_type="image/jpeg",
-        filename="result.jpg"
+        filename="result.jpg",
+        headers={"X-Inference-Time": f"{inference_time}s"}
     )
