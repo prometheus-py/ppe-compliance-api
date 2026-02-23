@@ -5,6 +5,14 @@ YOLOv8-based object detection API for detecting Personal Protective Equipment (P
  2. Safety Vest
 
 
+### Live Frontend
+
+Access the live Gradio interface globally:  
+[https://prometheus-ai-ppe-api-ui.hf.space](https://prometheus-ai-ppe-api-ui.hf.space)
+
+- No local setup needed — just upload an image and view the results online.
+
+
 ### Tech Stack
 * Python 3.x
 * FastAPI
@@ -28,15 +36,35 @@ The model is pre-trained and fine-tuned for PPE detection
 ### Project Structure
 ppe-compliance-api/
 
+ppe-compliance-api/
+
 │
 
-├── api.py               # FastAPI application
+├── backend/ # Backend API files
 
-├── ppe_model.pt         # Trained YOLOv8 model
+│ ├── api.py
 
-├── requirements.txt     # Project dependencies
+│ ├── ppe_model.pt
 
-└── README.md
+│ ├── requirements.txt
+
+│ └── Procfile
+
+│
+
+├── frontend/ # Frontend UI files
+
+│ ├── app.py
+
+│ └── requirements.txt
+
+│
+
+├── Dockerfile
+
+├── README.md
+
+└── .gitignore
 
 Clone the repository:
 `git clone https://github.com/prometheus-py/ppe-compliance-api.git`
